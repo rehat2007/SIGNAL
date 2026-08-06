@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Flow</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <main>
+        <header>
+            <h1>Task Flow</h1>
+            <!-- #TODO ==> Date will be added dainamicly -->
+            <p> </p>
+        </header>
+        <!-- Input Section -->
+        <section class="task-input">
+            <input type="text" class="input" placeholder="What you need to do?">
+            <button class="input-btn ">+</button>
+        </section>
+        <!-- Filter Section -->
+        <section class="task-filter">
+            <p class="filter active">All</p>
+            <p class="filter pending">Pending</p>
+            <p class="filter complete">Completed</p>
+        </section>
+        <!-- Task List Section -->
+        <!-- Without any task -->
+        <div class="task-list-blank hidden">
+            <h2>NO TASK ADD YET !</h2>
+        </div>
+        <!-- With task -->
+        <section class="task-container">
+            <ul class="task-list">
+                <!-- <li>
+                    <div class="task">
+                        <input type="checkbox">
+                        <span>Learn JavaScript</span>
+                    </div>
+                    <div class="actions">
+                        <button>🗑️</button>
+                    </div>
+                </li> -->
+            </ul>
+        </section>
+        <footer>
+            <p> <span class="left-item"> </span> Item left</p>
+            <button class="clear-complete">Clear completed</button>
+        </footer>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
