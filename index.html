@@ -1,57 +1,883 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Manager</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGNAL — Digital Marketing Agency</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Source+Serif+4:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+
+/* ========================================================
+   TOKENS
+   ======================================================== */
+:root{
+  --ink:#142623;
+  --ink-soft:#2b423d;
+  --paper:#EDEEE3;
+  --paper-dim:#E2E4D5;
+  --amber:#E7A23A;
+  --amber-soft:#f3c988;
+  --teal:#2F6E64;
+  --coral:#C6543F;
+  --line: rgba(20,38,35,0.14);
+  --line-strong: rgba(20,38,35,0.28);
+
+  --display: 'Big Shoulders Display', sans-serif;
+  --body: 'Source Serif 4', Georgia, serif;
+  --mono: 'JetBrains Mono', monospace;
+
+  --maxw: 1280px;
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:17px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+img,svg{display:block;max-width:100%;}
+a{color:inherit;}
+button{font-family:inherit;}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important;}
+}
+
+.wrap{
+  max-width:var(--maxw);
+  margin:0 auto;
+  padding:0 40px;
+}
+@media (max-width:720px){ .wrap{padding:0 22px;} }
+
+.eyebrow{
+  font-family:var(--mono);
+  font-size:12.5px;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:var(--teal);
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.eyebrow::before{
+  content:"";
+  width:7px;height:7px;border-radius:50%;
+  background:var(--coral);
+  box-shadow:0 0 0 3px rgba(198,84,63,0.18);
+}
+
+h1,h2,h3,h4{
+  font-family:var(--display);
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:0.005em;
+  line-height:0.94;
+  margin:0;
+  color:var(--ink);
+}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  font-family:var(--mono);
+  font-size:13px;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  padding:14px 24px;
+  border-radius:2px;
+  border:1.5px solid var(--ink);
+  background:transparent;
+  color:var(--ink);
+  cursor:pointer;
+  text-decoration:none;
+  transition:background .25s ease, color .25s ease, transform .2s ease;
+}
+.btn:hover{transform:translateY(-2px);}
+.btn-solid{
+  background:var(--ink);
+  color:var(--paper);
+}
+.btn-solid:hover{background:var(--teal); border-color:var(--teal);}
+.btn-ghost:hover{background:var(--ink); color:var(--paper);}
+
+/* ========================================================
+   REVEAL ON SCROLL
+   ======================================================== */
+.reveal{
+  opacity:0;
+  transform:translateY(28px);
+  transition:opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1);
+}
+.reveal.in{opacity:1; transform:translateY(0);}
+.reveal-stagger.in > *{transition-delay:calc(var(--i,0) * 90ms);}
+
+/* ========================================================
+   NAV
+   ======================================================== */
+header{
+  position:fixed;
+  top:0; left:0; right:0;
+  z-index:100;
+  background:rgba(237,238,227,0.86);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.navbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  height:76px;
+}
+.logo{
+  font-family:var(--display);
+  font-weight:900;
+  font-size:24px;
+  text-transform:uppercase;
+  letter-spacing:0.02em;
+  text-decoration:none;
+  color:var(--ink);
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.logo .dot{width:9px;height:9px;border-radius:50%;background:var(--coral);animation:pulse 2.4s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;} 50%{opacity:.35;}}
+
+.nav-links{
+  display:flex;
+  gap:34px;
+  list-style:none;
+  margin:0; padding:0;
+  font-family:var(--mono);
+  font-size:13px;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+}
+.nav-links a{
+  text-decoration:none;
+  color:var(--ink);
+  position:relative;
+  padding-bottom:4px;
+}
+.nav-links a::after{
+  content:"";
+  position:absolute;
+  left:0; bottom:0;
+  width:0%; height:1.5px;
+  background:var(--coral);
+  transition:width .25s ease;
+}
+.nav-links a:hover::after{width:100%;}
+
+.nav-cta{display:flex; align-items:center; gap:22px;}
+.nav-cta .btn{padding:11px 20px;}
+
+.burger{
+  display:none;
+  flex-direction:column;
+  gap:5px;
+  background:none;
+  border:none;
+  cursor:pointer;
+  padding:8px;
+}
+.burger span{width:24px;height:2px;background:var(--ink);transition:transform .3s ease, opacity .3s ease;}
+.burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.burger.open span:nth-child(2){opacity:0;}
+.burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+.mobile-menu{
+  display:none;
+  position:fixed;
+  top:76px; left:0; right:0; bottom:0;
+  background:var(--paper);
+  z-index:99;
+  padding:40px 28px;
+  transform:translateY(-12px);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .3s ease, transform .3s ease;
+}
+.mobile-menu.open{opacity:1; transform:translateY(0); pointer-events:auto;}
+.mobile-menu ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0;}
+.mobile-menu li{border-bottom:1px solid var(--line);}
+.mobile-menu a{
+  display:block;
+  padding:22px 4px;
+  text-decoration:none;
+  color:var(--ink);
+  font-family:var(--display);
+  font-weight:800;
+  font-size:30px;
+  text-transform:uppercase;
+}
+.mobile-menu .btn{margin-top:28px; width:100%; justify-content:center;}
+
+@media (max-width:900px){
+  .nav-links, .nav-cta .btn-ghost{display:none;}
+  .burger{display:flex;}
+  .mobile-menu{display:block;}
+}
+
+/* ========================================================
+   HERO
+   ======================================================== */
+.hero{
+  padding:168px 0 96px;
+  position:relative;
+  overflow:hidden;
+  border-bottom:1px solid var(--line);
+}
+.hero-grid{
+  display:grid;
+  grid-template-columns:1.15fr 0.85fr;
+  gap:60px;
+  align-items:end;
+}
+.hero h1{
+  font-size:clamp(52px, 7.2vw, 108px);
+  margin-top:22px;
+}
+.hero h1 em{
+  font-style:normal;
+  color:var(--paper);
+  background:var(--ink);
+  padding:0 12px;
+}
+.hero-sub{
+  max-width:440px;
+  font-size:18px;
+  color:var(--ink-soft);
+  margin:26px 0 34px;
+}
+.hero-actions{display:flex; gap:16px; flex-wrap:wrap;}
+
+.hero-panel{
+  border:1px solid var(--line-strong);
+  background:rgba(255,255,255,0.35);
+  padding:22px;
+  position:relative;
+}
+.hero-panel-label{
+  display:flex; justify-content:space-between;
+  font-family:var(--mono); font-size:11.5px; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--ink-soft);
+  margin-bottom:14px;
+}
+.hero-panel-label span.live{color:var(--coral); display:flex; align-items:center; gap:6px;}
+.hero-panel-label span.live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--coral);animation:pulse 1.6s ease-in-out infinite;}
+
+#wave-svg{width:100%; height:130px;}
+.wave-path{
+  fill:none;
+  stroke:var(--teal);
+  stroke-width:2.5;
+  stroke-linecap:round;
+}
+.wave-path.amber{stroke:var(--amber); stroke-width:2;}
+
+.stat-row{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1px;
+  background:var(--line);
+  margin-top:18px;
+  border:1px solid var(--line);
+}
+.stat-row div{
+  background:var(--paper);
+  padding:14px 12px;
+}
+.stat-num{font-family:var(--display); font-weight:800; font-size:26px;}
+.stat-label{font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-soft);}
+
+@media (max-width:900px){
+  .hero{padding:120px 0 64px;}
+  .hero-grid{grid-template-columns:1fr; gap:40px;}
+}
+
+/* ========================================================
+   SECTION SHELL
+   ======================================================== */
+section{padding:110px 0; border-bottom:1px solid var(--line);}
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:30px;
+  margin-bottom:56px;
+}
+.section-head h2{font-size:clamp(34px,4.4vw,56px);}
+.section-head p{max-width:380px; color:var(--ink-soft); font-size:16px; margin:0;}
+@media (max-width:760px){
+  section{padding:76px 0;}
+  .section-head{flex-direction:column; align-items:flex-start;}
+}
+
+/* ========================================================
+   ABOUT
+   ======================================================== */
+.about-grid{
+  display:grid;
+  grid-template-columns:0.9fr 1.1fr;
+  gap:70px;
+}
+.about-copy p{font-size:18px; color:var(--ink-soft); max-width:480px;}
+.about-copy p + p{margin-top:18px;}
+.freq-list{
+  border-top:1px solid var(--line-strong);
+}
+.freq-item{
+  display:grid;
+  grid-template-columns:90px 1fr;
+  gap:20px;
+  padding:22px 0;
+  border-bottom:1px solid var(--line);
+}
+.freq-item .f-num{
+  font-family:var(--mono);
+  color:var(--coral);
+  font-size:14px;
+  padding-top:3px;
+}
+.freq-item h4{
+  font-size:20px;
+  text-transform:none;
+  font-weight:800;
+  margin-bottom:6px;
+}
+.freq-item p{margin:0; color:var(--ink-soft); font-size:15.5px;}
+
+@media (max-width:900px){ .about-grid{grid-template-columns:1fr; gap:40px;} }
+
+/* ========================================================
+   SERVICES
+   ======================================================== */
+.services-grid{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:1px;
+  background:var(--line-strong);
+  border:1px solid var(--line-strong);
+}
+.service-card{
+  background:var(--paper);
+  padding:34px 28px;
+  transition:background .3s ease, transform .3s ease;
+  position:relative;
+}
+.service-card:hover{background:var(--ink); transform:translateY(-3px);}
+.service-card:hover *{color:var(--paper) !important;}
+.service-card:hover .s-icon{background:var(--amber); border-color:var(--amber);}
+.s-icon{
+  width:44px; height:44px;
+  border:1.5px solid var(--ink);
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  margin-bottom:20px;
+  transition:all .3s ease;
+}
+.s-icon svg{width:20px;height:20px;}
+.service-card h3{font-size:22px; text-transform:none; font-weight:800; margin-bottom:10px;}
+.service-card p{margin:0; color:var(--ink-soft); font-size:15px;}
+.s-tag{
+  font-family:var(--mono); font-size:11px; color:var(--teal);
+  text-transform:uppercase; letter-spacing:0.08em;
+  margin-top:16px; display:block;
+}
+@media (max-width:900px){ .services-grid{grid-template-columns:1fr 1fr;} }
+@media (max-width:600px){ .services-grid{grid-template-columns:1fr;} }
+
+/* ========================================================
+   PORTFOLIO
+   ======================================================== */
+.folio-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:26px;
+}
+.folio-card{
+  border:1px solid var(--line-strong);
+  overflow:hidden;
+}
+.folio-media{
+  height:260px;
+  background:linear-gradient(135deg, var(--teal), var(--ink));
+  position:relative;
+  display:flex; align-items:flex-end;
+  padding:20px;
+}
+.folio-media .tag{
+  font-family:var(--mono); font-size:11px; color:var(--paper);
+  border:1px solid rgba(237,238,227,0.5);
+  padding:4px 10px; text-transform:uppercase; letter-spacing:0.06em;
+}
+.folio-body{padding:24px 26px 28px;}
+.folio-body h3{font-size:24px; text-transform:none; font-weight:800;}
+.folio-body p{color:var(--ink-soft); font-size:15px; margin:10px 0 18px;}
+.folio-metrics{display:flex; gap:26px;}
+.folio-metrics div{font-family:var(--mono);}
+.folio-metrics b{display:block; font-size:22px; color:var(--coral); font-family:var(--display); font-weight:800;}
+.folio-metrics span{font-size:10.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-soft);}
+@media (max-width:800px){ .folio-grid{grid-template-columns:1fr;} }
+
+/* ========================================================
+   TESTIMONIALS
+   ======================================================== */
+.testi-strip{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1px;
+  background:var(--line-strong);
+  border:1px solid var(--line-strong);
+}
+.testi-card{
+  background:var(--paper-dim);
+  padding:32px 28px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  min-height:280px;
+}
+.testi-quote{
+  font-family:var(--body);
+  font-style:italic;
+  font-size:18px;
+  line-height:1.5;
+  color:var(--ink);
+}
+.testi-who{
+  margin-top:24px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-family:var(--mono);
+  font-size:12px;
+}
+.testi-avatar{
+  width:38px;height:38px;border-radius:50%;
+  background:var(--teal);
+  color:var(--paper);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--display); font-weight:800;
+}
+@media (max-width:900px){ .testi-strip{grid-template-columns:1fr;} }
+
+/* ========================================================
+   CONTACT
+   ======================================================== */
+.contact-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:70px;
+}
+.contact-info h2{font-size:clamp(34px,4.4vw,56px);}
+.contact-info p{color:var(--ink-soft); font-size:17px; max-width:400px; margin:20px 0 34px;}
+.contact-detail{margin-bottom:20px;}
+.contact-detail .cl{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:var(--teal); display:block; margin-bottom:4px;}
+.contact-detail .cv{font-size:18px;}
+.contact-detail a{text-decoration:none;}
+
+.form-field{margin-bottom:22px;}
+.form-field label{
+  display:block;
+  font-family:var(--mono);
+  font-size:11.5px;
+  text-transform:uppercase;
+  letter-spacing:0.06em;
+  color:var(--ink-soft);
+  margin-bottom:8px;
+}
+.form-field input, .form-field textarea{
+  width:100%;
+  background:transparent;
+  border:none;
+  border-bottom:1.5px solid var(--line-strong);
+  padding:10px 2px;
+  font-family:var(--body);
+  font-size:17px;
+  color:var(--ink);
+  outline:none;
+  transition:border-color .2s ease;
+  resize:vertical;
+}
+.form-field input:focus, .form-field textarea:focus{border-color:var(--coral);}
+.form-field textarea{min-height:100px;}
+.form-row{display:grid; grid-template-columns:1fr 1fr; gap:22px;}
+@media (max-width:560px){ .form-row{grid-template-columns:1fr;} }
+
+.form-msg{
+  font-family:var(--mono);
+  font-size:13px;
+  margin-top:18px;
+  display:none;
+  color:var(--teal);
+}
+.form-msg.show{display:block;}
+
+@media (max-width:900px){ .contact-grid{grid-template-columns:1fr; gap:50px;} }
+
+/* ========================================================
+   FOOTER
+   ======================================================== */
+footer{padding:50px 0 40px;}
+.foot-row{
+  display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;
+}
+.foot-row .logo{font-size:20px;}
+.foot-links{
+  display:flex; gap:26px; list-style:none; margin:0; padding:0;
+  font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:0.05em;
+  color:var(--ink-soft);
+}
+.foot-links a{text-decoration:none; color:var(--ink-soft);}
+.foot-copy{font-family:var(--mono); font-size:11.5px; color:var(--ink-soft); margin-top:26px;}
+
+</style>
 </head>
-
 <body>
-    <main>
-        <header>
-            <h1>Task Manager</h1>
-            <!-- #TODO ==> Date will be added dainamicly -->
-            <p> </p>
-        </header>
-        <!-- Input Section -->
-        <section class="task-input">
-            <input type="text" class="input" placeholder="What you need to do?">
-            <button class="input-btn ">+</button>
-        </section>
-        <!-- Filter Section -->
-        <section class="task-filter">
-            <p class="filter active">All</p>
-            <p class="filter pending">Pending</p>
-            <p class="filter complete">Completed</p>
-        </section>
-        <!-- Task List Section -->
-        <!-- Without any task -->
-        <div class="task-list-blank hidden">
-            <h2>NO TASK ADD YET !</h2>
+
+<!-- ============ HEADER / NAV ============ -->
+<header>
+  <div class="wrap navbar">
+    <a href="#home" class="logo"><span class="dot"></span>SIGNAL</a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#portfolio">Portfolio</a></li>
+        <li><a href="#testimonials">Testimonials</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="nav-cta">
+      <a href="#contact" class="btn btn-ghost">Start a project</a>
+      <button class="burger" id="burger" aria-label="Open menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <ul>
+    <li><a href="#home">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#testimonials">Testimonials</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="btn btn-solid">Start a project</a>
+</div>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="home" style="border-bottom:1px solid var(--line); padding-top:168px;">
+  <div class="wrap hero-grid">
+    <div class="reveal in">
+      <div class="eyebrow">Full-service digital marketing agency</div>
+      <h1>We turn brand<br>noise into a<br><em>clear signal.</em></h1>
+      <p class="hero-sub">SIGNAL is a digital marketing agency for companies who are tired of shouting into the void. Strategy, media, and creative — tuned until the right people hear you.</p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn btn-solid">Start a project →</a>
+        <a href="#portfolio" class="btn btn-ghost">See the results</a>
+      </div>
+    </div>
+
+    <div class="hero-panel reveal in">
+      <div class="hero-panel-label">
+        <span>Client output — real-time</span>
+        <span class="live">On air</span>
+      </div>
+      <svg id="wave-svg" viewBox="0 0 400 130" preserveAspectRatio="none">
+        <path class="wave-path amber" id="waveAmber" d="" />
+        <path class="wave-path" id="waveTeal" d="" />
+      </svg>
+      <div class="stat-row">
+        <div><div class="stat-num">4.2×</div><div class="stat-label">Avg. ROAS</div></div>
+        <div><div class="stat-num">128</div><div class="stat-label">Campaigns / yr</div></div>
+        <div><div class="stat-num">93%</div><div class="stat-label">Client retention</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section id="about">
+  <div class="wrap about-grid">
+    <div class="reveal">
+      <div class="eyebrow">About the studio</div>
+      <h2 style="margin-top:16px; font-size:clamp(32px,4vw,50px);">Ten years of finding the signal in crowded markets.</h2>
+    </div>
+    <div class="about-copy reveal">
+      <p>SIGNAL was founded in 2015 by a small team of media buyers and copywriters who thought marketing agencies had gotten too comfortable pushing the same playbook to every client. We build ours from scratch, every time.</p>
+      <p>Today we're a 34-person team split across strategy, performance media, content, and brand — working with founders and marketing leads who want a partner that treats their budget like it's our own.</p>
+      <div class="freq-list">
+        <div class="freq-item">
+          <div class="f-num">01</div>
+          <div><h4>Research before creative</h4><p>We map the audience and the competitive noise floor before a single ad gets written.</p></div>
         </div>
-        <!-- With task -->
-        <section class="task-container">
-            <ul class="task-list">
-                <!-- <li>
-                    <div class="task">
-                        <input type="checkbox">
-                        <span>Learn JavaScript</span>
-                    </div>
-                    <div class="actions">
-                        <button>🗑️</button>
-                    </div>
-                </li> -->
-            </ul>
-        </section>
-        <footer>
-            <p> <span class="left-item"> </span> Item left</p>
-            <button class="clear-complete">Clear completed</button>
-        </footer>
-    </main>
+        <div class="freq-item">
+          <div class="f-num">02</div>
+          <div><h4>One senior team, start to finish</h4><p>No account handoffs. The strategist who pitches you is the strategist running your account in month six.</p></div>
+        </div>
+        <div class="freq-item">
+          <div class="f-num">03</div>
+          <div><h4>Reporting you can actually read</h4><p>Plain-language weekly reports tied to revenue, not vanity metrics.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <script src="script.js"></script>
+<!-- ============ SERVICES ============ -->
+<section id="services">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <h2>Services</h2>
+      <p>Everything a growing brand needs to be heard, run by specialists — not generalists.</p>
+    </div>
+    <div class="services-grid reveal-stagger">
+      <div class="service-card reveal" style="--i:0">
+        <div class="s-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div>
+        <h3>SEO &amp; Organic</h3>
+        <p>Technical audits, content architecture, and link strategy built to compound over years, not weeks.</p>
+        <span class="s-tag">Organic search</span>
+      </div>
+      <div class="service-card reveal" style="--i:1">
+        <div class="s-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l18-7-7 18-2.5-7.5L3 11z"/></svg></div>
+        <h3>Paid Media</h3>
+        <p>Search, social, and programmatic buys managed toward payback period, not impressions.</p>
+        <span class="s-tag">Performance</span>
+      </div>
+      <div class="service-card reveal" style="--i:2">
+        <div class="s-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="1"/><path d="M3 9h18"/></svg></div>
+        <h3>Social &amp; Community</h3>
+        <p>Editorial calendars and community management that build an audience, not just a feed.</p>
+        <span class="s-tag">Owned channels</span>
+      </div>
+      <div class="service-card reveal" style="--i:3">
+        <div class="s-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 19V5a1 1 0 011-1h9l6 6v9a1 1 0 01-1 1H5a1 1 0 01-1-1z"/><path d="M14 4v6h6"/></svg></div>
+        <h3>Content &amp; Copy</h3>
+        <p>Long and short-form writing, video scripts, and design that sounds like your brand, not ours.</p>
+        <span class="s-tag">Creative</span>
+      </div>
+      <div class="service-card reveal" style="--i:4">
+        <div class="s-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4l16 16M4 20L20 4"/></svg></div>
+        <h3>Email &amp; Lifecycle</h3>
+        <p>Flows and campaigns tuned against real revenue-per-send, retested every quarter.</p>
+        <span class="s-tag">Retention</span>
+      </div>
+      <div class="service-card reveal" style="--i:5">
+        <div class="s-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l3 7h7l-5.5 4.3L18.5 21 12 16.8 5.5 21l2-7.7L2 9h7z"/></svg></div>
+        <h3>Brand Strategy</h3>
+        <p>Positioning, naming, and messaging systems that give every channel a shared point of view.</p>
+        <span class="s-tag">Foundation</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PORTFOLIO ============ -->
+<section id="portfolio">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <h2>Portfolio</h2>
+      <p>A few recent campaigns and the numbers behind them.</p>
+    </div>
+    <div class="folio-grid">
+      <div class="folio-card reveal">
+        <div class="folio-media"><span class="tag">E-commerce · Paid + SEO</span></div>
+        <div class="folio-body">
+          <h3>Northwood Coffee Co.</h3>
+          <p>Full-funnel relaunch across paid social and organic search ahead of a national retail push.</p>
+          <div class="folio-metrics">
+            <div><b>+212%</b><span>Organic traffic</span></div>
+            <div><b>3.8×</b><span>ROAS</span></div>
+            <div><b>6 mo</b><span>Timeline</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="folio-card reveal">
+        <div class="folio-media" style="background:linear-gradient(135deg, var(--coral), var(--ink));"><span class="tag">B2B SaaS · Content + Email</span></div>
+        <div class="folio-body">
+          <h3>Ledger Financial Tools</h3>
+          <p>Rebuilt lifecycle email and a content engine that now drives a third of demo bookings.</p>
+          <div class="folio-metrics">
+            <div><b>+64%</b><span>Demo requests</span></div>
+            <div><b>-31%</b><span>CAC</span></div>
+            <div><b>9 mo</b><span>Timeline</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="folio-card reveal">
+        <div class="folio-media" style="background:linear-gradient(135deg, var(--amber), var(--ink));"><span class="tag">DTC Retail · Brand + Social</span></div>
+        <div class="folio-body">
+          <h3>Marlow Skincare</h3>
+          <p>New brand system and a community-led social strategy ahead of a Series A raise.</p>
+          <div class="folio-metrics">
+            <div><b>+180K</b><span>Followers</span></div>
+            <div><b>4.5×</b><span>Engagement</span></div>
+            <div><b>4 mo</b><span>Timeline</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="folio-card reveal">
+        <div class="folio-media" style="background:linear-gradient(135deg, var(--teal), var(--paper-dim));"><span class="tag">Hospitality · Local SEO</span></div>
+        <div class="folio-body">
+          <h3>Harbor House Hotels</h3>
+          <p>Local SEO and Google Business overhaul across a 12-property portfolio.</p>
+          <div class="folio-metrics">
+            <div><b>+97%</b><span>Direct bookings</span></div>
+            <div><b>#1</b><span>Local pack rank</span></div>
+            <div><b>5 mo</b><span>Timeline</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTIMONIALS ============ -->
+<section id="testimonials">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <h2>Testimonials</h2>
+      <p>What it's like to work with the team, in their words.</p>
+    </div>
+    <div class="testi-strip">
+      <div class="testi-card reveal">
+        <p class="testi-quote">"SIGNAL didn't just run our ads — they rebuilt how we think about who we're talking to. Our CAC has never been lower."</p>
+        <div class="testi-who"><div class="testi-avatar">JR</div>Jordan Reyes, Northwood Coffee Co.</div>
+      </div>
+      <div class="testi-card reveal">
+        <p class="testi-quote">"The weekly reports are the first marketing reports our finance team has actually asked to see."</p>
+        <div class="testi-who"><div class="testi-avatar">AM</div>Aisha Malik, Ledger Financial Tools</div>
+      </div>
+      <div class="testi-card reveal">
+        <p class="testi-quote">"They found an audience we didn't know we had, and built a brand strong enough to hold onto it."</p>
+        <div class="testi-who"><div class="testi-avatar">TC</div>Theo Chen, Marlow Skincare</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section id="contact">
+  <div class="wrap contact-grid">
+    <div class="contact-info reveal">
+      <div class="eyebrow">Get in touch</div>
+      <h2 style="margin-top:16px;">Let's find<br>your signal.</h2>
+      <p>Tell us about the project and we'll reply within one business day with next steps — no automated funnel, just a person reading your message.</p>
+      <div class="contact-detail"><span class="cl">Email</span><span class="cv"><a href="mailto:hello@signalagency.co">hello@signalagency.co</a></span></div>
+      <div class="contact-detail"><span class="cl">Phone</span><span class="cv"><a href="tel:+18885551234">+1 (888) 555-1234</a></span></div>
+      <div class="contact-detail"><span class="cl">Studio</span><span class="cv">140 Harbor Row, Suite 4, Portland, OR</span></div>
+    </div>
+
+    <form class="reveal" id="contactForm">
+      <div class="form-row">
+        <div class="form-field">
+          <label for="fname">Name</label>
+          <input type="text" id="fname" name="name" placeholder="Jane Cooper" required>
+        </div>
+        <div class="form-field">
+          <label for="fcompany">Company</label>
+          <input type="text" id="fcompany" name="company" placeholder="Acme Inc.">
+        </div>
+      </div>
+      <div class="form-field">
+        <label for="femail">Email</label>
+        <input type="email" id="femail" name="email" placeholder="jane@acme.com" required>
+      </div>
+      <div class="form-field">
+        <label for="fmessage">What are you looking to grow?</label>
+        <textarea id="fmessage" name="message" placeholder="Tell us a bit about your goals, timeline, and budget." required></textarea>
+      </div>
+      <button type="submit" class="btn btn-solid">Send message →</button>
+      <div class="form-msg" id="formMsg">Message received — we'll be in touch within one business day.</div>
+    </form>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <a href="#home" class="logo"><span class="dot"></span>SIGNAL</a>
+      <ul class="foot-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#portfolio">Portfolio</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div class="foot-copy">© 2026 Signal Digital Marketing Agency. All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+// ===== Mobile menu =====
+const burger = document.getElementById('burger');
+const mobileMenu = document.getElementById('mobileMenu');
+burger.addEventListener('click', () => {
+  burger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+});
+mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  burger.classList.remove('open');
+  mobileMenu.classList.remove('open');
+}));
+
+// ===== Scroll reveal =====
+const revealEls = document.querySelectorAll('.reveal, .reveal-stagger');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      entry.target.classList.add('in');
+      io.unobserve(entry.target);
+    }
+  });
+}, {threshold:0.15});
+revealEls.forEach(el => io.observe(el));
+
+// ===== Hero waveform animation =====
+const waveAmber = document.getElementById('waveAmber');
+const waveTeal = document.getElementById('waveTeal');
+let t = 0;
+function buildWave(offset, amp, freq, phase){
+  let d = `M0,${65}`;
+  for(let x=0; x<=400; x+=8){
+    const y = 65 + Math.sin((x*freq) + phase) * amp * Math.sin((x/400)*Math.PI);
+    d += ` L${x},${y.toFixed(1)}`;
+  }
+  return d;
+}
+function animateWave(){
+  t += 0.045;
+  waveAmber.setAttribute('d', buildWave(0, 34, 0.045, t));
+  waveTeal.setAttribute('d', buildWave(0, 22, 0.07, t*1.4 + 2));
+  requestAnimationFrame(animateWave);
+}
+animateWave();
+
+// ===== Contact form =====
+const form = document.getElementById('contactForm');
+const formMsg = document.getElementById('formMsg');
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  formMsg.classList.add('show');
+  form.reset();
+  setTimeout(() => formMsg.classList.remove('show'), 6000);
+});
+</script>
+
 </body>
-
 </html>
